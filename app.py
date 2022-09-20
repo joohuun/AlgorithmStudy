@@ -1,25 +1,44 @@
-# 재귀 함수로 구현한 이진 탐색
-def binary_search(array, target, start, end):
-    if start > end:
-        return None
-    mid = (start + end) // 2
+from collections import deque
 
-    # 원하는 값 찾은 경우 인덱스 반환
-    if array[mid] == target:
-        return mid
-    # 원하는 값이 중간점의 값보다 작은 경우 왼쪽 부분(절반의 왼쪽 부분) 확인
-    elif array[mid] > target:
-        return binary_search(array, target, start, mid - 1)
-    # 원하는 값이 중간점의 값보다 큰 경우 오른쪽 부분(절반의 오른쪽 부분) 확인
-    else:
-        return binary_search(array, target, mid + 1, end)
+'''
+    N = 정점의 갯수
+    M = 정점을 잇는 변의 갯수
+    V = 시작 정점의 번호
+'''
 
+N, M, V = map(int, input().split())
 
-n, target = list(map(int, input().split()))
-array = list(map(int, input().split()))
+graph = [[False] * (N+1) for _ in range(N+1)]
 
-result = binary_search(array, target, 0, n - 1)
-if result is None:
-    print('원소가 존재 X')
-else:
-    print(result + 1)
+for _ in range(M):
+    a, b = map(int, input().split())
+    graph[a][b] = True
+    graph[b][a] = True
+    
+
+dfs_visited = [False] * (N+1)
+bfs_visited = [False] * (N+1)
+
+def dfs(V):
+    dfs_visited[V] = True
+    print(V, " ")
+    for i in range(V, N+1):
+        if not dfs_visited[i] and graph[V][i]:
+            dfs(i)
+            
+def bfs(V):
+    queue = deque([V])
+    bfs_visited[V] = True
+    while queue:
+        V = queue.popleft()
+        print(V, " ")
+        for i in range(1, N+1):
+            if not bfs_visited[i] and graph[V][i]:
+                queue.append(i)
+                bfs_visited[i] = True
+        
+bfs(V)
+print()
+dfs(V)
+                
+            
